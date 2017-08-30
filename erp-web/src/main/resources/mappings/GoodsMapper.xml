@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoft.erp.dao.inf.GoodsMapper" >
+
+  <resultMap id="BaseResultMap" type="com.isoft.erp.entity.po.Goods" >
+    <id column="UUID" property="uuid" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ORIGIN" property="origin" jdbcType="VARCHAR" />
+    <result column="PRODUCER" property="producer" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="INPRICE" property="inprice" jdbcType="DECIMAL" />
+    <result column="OUTPRICE" property="outprice" jdbcType="DECIMAL" />
+    <result column="GOODSTYPEUUID" property="goodstypeuuid" jdbcType="DECIMAL" />
+  </resultMap>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="Base_Column_List" >
+    UUID, NAME, ORIGIN, PRODUCER, UNIT, INPRICE, OUTPRICE, GOODSTYPEUUID
+  </sql>
+  <!--分页使用-->
+  <select id="countByExample" parameterType="com.isoft.erp.entity.po.GoodsExample" resultType="java.lang.Integer" >
+    select count(*) from GOODS
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <!--分页使用-->
+  <select id="getGoodsRow" parameterType="com.isoft.erp.entity.bean.OraclePageBean" resultMap="BaseResultMap">
+    ${sqlPrefix}
+    select
+    <include refid="Base_Column_List"/>
+    from
+    GOODS
+    <where>
+      <if test="conditions.goodstypeuuid != null">
+        goodstypeuuid = #{conditions.goodstypeuuid}
+      </if>
+    </where>
+    ${sqlSuffix}
+  </select>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.isoft.erp.entity.po.GoodsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from GOODS
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <!--查出一条数据-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from GOODS
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from GOODS
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.isoft.erp.entity.po.GoodsExample" >
+    delete from GOODS
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="com.isoft.erp.entity.po.Goods" >
+    insert into GOODS (UUID, NAME, ORIGIN, 
+      PRODUCER, UNIT, INPRICE, 
+      OUTPRICE, GOODSTYPEUUID)
+    values (#{uuid,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{origin,jdbcType=VARCHAR}, 
+      #{producer,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{inprice,jdbcType=DECIMAL}, 
+      #{outprice,jdbcType=DECIMAL}, #{goodstypeuuid,jdbcType=DECIMAL})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.isoft.erp.entity.po.Goods" >
+    insert into GOODS
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        UUID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="origin != null" >
+        ORIGIN,
+      </if>
+      <if test="producer != null" >
+        PRODUCER,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="inprice != null" >
+        INPRICE,
+      </if>
+      <if test="outprice != null" >
+        OUTPRICE,
+      </if>
+      <if test="goodstypeuuid != null" >
+        GOODSTYPEUUID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=DECIMAL},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="producer != null" >
+        #{producer,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="inprice != null" >
+        #{inprice,jdbcType=DECIMAL},
+      </if>
+      <if test="outprice != null" >
+        #{outprice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodstypeuuid != null" >
+        #{goodstypeuuid,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByExampleSelective" parameterType="map" >
+    update GOODS
+    <set >
+      <if test="record.uuid != null" >
+        UUID = #{record.uuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.name != null" >
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.origin != null" >
+        ORIGIN = #{record.origin,jdbcType=VARCHAR},
+      </if>
+      <if test="record.producer != null" >
+        PRODUCER = #{record.producer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.unit != null" >
+        UNIT = #{record.unit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inprice != null" >
+        INPRICE = #{record.inprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.outprice != null" >
+        OUTPRICE = #{record.outprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.goodstypeuuid != null" >
+        GOODSTYPEUUID = #{record.goodstypeuuid,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update GOODS
+    set UUID = #{record.uuid,jdbcType=DECIMAL},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      ORIGIN = #{record.origin,jdbcType=VARCHAR},
+      PRODUCER = #{record.producer,jdbcType=VARCHAR},
+      UNIT = #{record.unit,jdbcType=VARCHAR},
+      INPRICE = #{record.inprice,jdbcType=DECIMAL},
+      OUTPRICE = #{record.outprice,jdbcType=DECIMAL},
+      GOODSTYPEUUID = #{record.goodstypeuuid,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.isoft.erp.entity.po.Goods" >
+    update GOODS
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        ORIGIN = #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="producer != null" >
+        PRODUCER = #{producer,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="inprice != null" >
+        INPRICE = #{inprice,jdbcType=DECIMAL},
+      </if>
+      <if test="outprice != null" >
+        OUTPRICE = #{outprice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodstypeuuid != null" >
+        GOODSTYPEUUID = #{goodstypeuuid,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.isoft.erp.entity.po.Goods" >
+    update GOODS
+    set NAME = #{name,jdbcType=VARCHAR},
+      ORIGIN = #{origin,jdbcType=VARCHAR},
+      PRODUCER = #{producer,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      INPRICE = #{inprice,jdbcType=DECIMAL},
+      OUTPRICE = #{outprice,jdbcType=DECIMAL},
+      GOODSTYPEUUID = #{goodstypeuuid,jdbcType=DECIMAL}
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </update>
+</mapper>

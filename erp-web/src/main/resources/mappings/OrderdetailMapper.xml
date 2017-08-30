@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoft.erp.dao.inf.OrderdetailMapper" >
+
+  <resultMap id="BaseResultMap" type="com.isoft.erp.entity.po.Orderdetail" >
+    <id column="UUID" property="uuid" jdbcType="DECIMAL" />
+    <result column="GOODSUUID" property="goodsuuid" jdbcType="DECIMAL" />
+    <result column="GOODSNAME" property="goodsname" jdbcType="VARCHAR" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="NUM" property="num" jdbcType="DECIMAL" />
+    <result column="MONEY" property="money" jdbcType="DECIMAL" />
+    <result column="ENDTIME" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="ENDER" property="ender" jdbcType="DECIMAL" />
+    <result column="STOREUUID" property="storeuuid" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="CHAR" />
+    <result column="ORDERSUUID" property="ordersuuid" jdbcType="DECIMAL" />
+  </resultMap>
+
+  <sql id="Example_Where_Clause" >
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="Base_Column_List" >
+    UUID, GOODSUUID, GOODSNAME, PRICE, NUM, MONEY, ENDTIME, ENDER, STOREUUID, STATE, ORDERSUUID
+  </sql>
+
+  <!--录入多条销售记录-->
+  <!--如果传入的是单参数且参数类型是一个List的时候,collection属性值为list-->
+  <!--如果传入的是单参数且参数类型是一个array数组的时候,collection的属性值为array-->
+  <!--如果传入的参数是多个的时候,我们就需要把它们封装成一个Map了-->
+  <insert id="insertOrders" parameterType="java.util.List">
+    insert into ORDERDETAIL (UUID, GOODSUUID, GOODSNAME, PRICE, NUM, MONEY, ENDER, ENDTIME,STOREUUID, STATE, ORDERSUUID)
+    select ORDERDETAIL_SEQ.nextval,t.* from (
+    <foreach collection="list" item="item" open="(" close=")" separator="union all">
+      select #{item.goodsuuid,jdbcType=DECIMAL},
+      #{item.goodsname,jdbcType=VARCHAR},#{item.price,jdbcType=DECIMAL},
+      #{item.num,jdbcType=DECIMAL},#{item.money,jdbcType=DECIMAL},
+      #{item.ender,jdbcType=DECIMAL},#{item.endtime,jdbcType=TIMESTAMP},
+      #{item.storeuuid,jdbcType=DECIMAL},#{item.state,jdbcType=CHAR},
+      #{item.ordersuuid,jdbcType=DECIMAL} from dual
+    </foreach>) t
+  </insert>
+
+  <!--<insert id="insertOrders" parameterType="List">--><!--这种方式根本不行-->
+    <!--<selectKey keyProperty="uuid" order="BEFORE" resultType="java.math.BigDecimal">-->
+      <!--select ORDERDETAIL_SEQ.nextval from dual-->
+    <!--</selectKey>-->
+    <!--insert into ORDERDETAIL (UUID, GOODSUUID, GOODSNAME, PRICE, NUM, MONEY, ENDER, ENDTIME,STOREUUID, STATE, ORDERSUUID)-->
+    <!--<foreach collection="list" item="item" separator="union all" open="values(" close=")">-->
+      <!--#{uuid,jdbcType=DECIMAL},#{item.goodsuuid,jdbcType=DECIMAL},-->
+      <!--#{item.goodsname,jdbcType=VARCHAR},#{item.price,jdbcType=DECIMAL},-->
+      <!--#{item.num,jdbcType=DECIMAL},#{item.money,jdbcType=DECIMAL},-->
+      <!--#{item.ender,jdbcType=DECIMAL},#{item.endtime,jdbcType=TIMESTAMP},-->
+      <!--#{item.storeuuid,jdbcType=DECIMAL},#{item.state,jdbcType=CHAR},-->
+      <!--#{item.ordersuuid,jdbcType=DECIMAL}-->
+    <!--</foreach>-->
+  <!--</insert>-->
+
+  <!--通过三个条件检索,且要分页显示-->
+  <select id="selectByConditions" parameterType="com.isoft.erp.entity.bean.OraclePageBean" resultMap="BaseResultMap">
+    ${sqlPrefix}
+    SELECT * FROM ORDERDETAIL
+    <where>
+      <if test="conditions.state != null">
+        state = #{conditions.state}
+      </if>
+      <if test="conditions.goodsname != null">
+        AND goodsname like #{conditions.goodsname}
+      </if>
+      <if test="conditions.goodsuuid != null">
+        AND goodsuuid like #{conditions.goodsuuid}
+      </if>
+    </where>
+    ${sqlSuffix}
+  </select>
+  <select id="countOrdersByConditions" parameterType="com.isoft.erp.entity.po.Orderdetail" resultType="java.lang.Integer" >
+    select count(*) from ORDERDETAIL
+    <where>
+      <if test="state != null">
+        state = #{state}
+      </if>
+      <if test="goodsname != null">
+        AND goodsname like #{goodsname}
+      </if>
+      <if test="goodsuuid != null">
+        AND goodsuuid like #{goodsuuid}
+      </if>
+    </where>
+  </select>
+
+  <!--分页查询数据-->
+  <select id="selectByPage" parameterType="com.isoft.erp.entity.bean.OraclePageBean"
+          resultMap="BaseResultMap">
+    ${sqlPrefix}
+    select
+    <include refid="Base_Column_List"/>
+    from
+    orderdetail
+    ${sqlSuffix}
+  </select>
+  <select id="countByExample" parameterType="com.isoft.erp.entity.po.OrderdetailExample" resultType="java.lang.Integer" >
+    select count(*) from ORDERDETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+  <insert id="insertSelective" parameterType="com.isoft.erp.entity.po.Orderdetail" >
+    insert into ORDERDETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        UUID,
+      </if>
+      <if test="goodsuuid != null" >
+        GOODSUUID,
+      </if>
+      <if test="goodsname != null" >
+        GOODSNAME,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="num != null" >
+        NUM,
+      </if>
+      <if test="money != null" >
+        MONEY,
+      </if>
+      <if test="endtime != null" >
+        ENDTIME,
+      </if>
+      <if test="ender != null" >
+        ENDER,
+      </if>
+      <if test="storeuuid != null" >
+        STOREUUID,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="ordersuuid != null" >
+        ORDERSUUID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsuuid != null" >
+        #{goodsuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsname != null" >
+        #{goodsname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ender != null" >
+        #{ender,jdbcType=DECIMAL},
+      </if>
+      <if test="storeuuid != null" >
+        #{storeuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=CHAR},
+      </if>
+      <if test="ordersuuid != null" >
+        #{ordersuuid,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.isoft.erp.entity.po.OrderdetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ORDERDETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select
+    <include refid="Base_Column_List" />
+    from ORDERDETAIL
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from ORDERDETAIL
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </delete>
+
+  <delete id="deleteByExample" parameterType="com.isoft.erp.entity.po.OrderdetailExample" >
+    delete from ORDERDETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ORDERDETAIL
+    <set >
+      <if test="record.uuid != null" >
+        UUID = #{record.uuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.goodsuuid != null" >
+        GOODSUUID = #{record.goodsuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.goodsname != null" >
+        GOODSNAME = #{record.goodsname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        PRICE = #{record.price,jdbcType=DECIMAL},
+      </if>
+      <if test="record.num != null" >
+        NUM = #{record.num,jdbcType=DECIMAL},
+      </if>
+      <if test="record.money != null" >
+        MONEY = #{record.money,jdbcType=DECIMAL},
+      </if>
+      <if test="record.endtime != null" >
+        ENDTIME = #{record.endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.ender != null" >
+        ENDER = #{record.ender,jdbcType=DECIMAL},
+      </if>
+      <if test="record.storeuuid != null" >
+        STOREUUID = #{record.storeuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=CHAR},
+      </if>
+      <if test="record.ordersuuid != null" >
+        ORDERSUUID = #{record.ordersuuid,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <update id="updateByExample" parameterType="map" >
+    update ORDERDETAIL
+    set UUID = #{record.uuid,jdbcType=DECIMAL},
+        GOODSUUID = #{record.goodsuuid,jdbcType=DECIMAL},
+        GOODSNAME = #{record.goodsname,jdbcType=VARCHAR},
+        PRICE = #{record.price,jdbcType=DECIMAL},
+        NUM = #{record.num,jdbcType=DECIMAL},
+        MONEY = #{record.money,jdbcType=DECIMAL},
+        ENDTIME = #{record.endtime,jdbcType=TIMESTAMP},
+        ENDER = #{record.ender,jdbcType=DECIMAL},
+        STOREUUID = #{record.storeuuid,jdbcType=DECIMAL},
+        STATE = #{record.state,jdbcType=CHAR},
+        ORDERSUUID = #{record.ordersuuid,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.isoft.erp.entity.po.Orderdetail" >
+    update ORDERDETAIL
+    <set >
+      <if test="goodsuuid != null" >
+        GOODSUUID = #{goodsuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsname != null" >
+        GOODSNAME = #{goodsname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        NUM = #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="money != null" >
+        MONEY = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="endtime != null" >
+        ENDTIME = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ender != null" >
+        ENDER = #{ender,jdbcType=DECIMAL},
+      </if>
+      <if test="storeuuid != null" >
+        STOREUUID = #{storeuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=CHAR},
+      </if>
+      <if test="ordersuuid != null" >
+        ORDERSUUID = #{ordersuuid,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.isoft.erp.entity.po.Orderdetail" >
+    update ORDERDETAIL
+    set GOODSUUID = #{goodsuuid,jdbcType=DECIMAL},
+        GOODSNAME = #{goodsname,jdbcType=VARCHAR},
+        PRICE = #{price,jdbcType=DECIMAL},
+        NUM = #{num,jdbcType=DECIMAL},
+        MONEY = #{money,jdbcType=DECIMAL},
+        ENDTIME = #{endtime,jdbcType=TIMESTAMP},
+        ENDER = #{ender,jdbcType=DECIMAL},
+        STOREUUID = #{storeuuid,jdbcType=DECIMAL},
+        STATE = #{state,jdbcType=CHAR},
+        ORDERSUUID = #{ordersuuid,jdbcType=DECIMAL}
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </update>
+</mapper>

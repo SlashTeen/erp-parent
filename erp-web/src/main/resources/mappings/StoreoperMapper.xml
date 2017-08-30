@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoft.erp.dao.inf.StoreoperMapper" >
+  <resultMap id="BaseResultMap" type="com.isoft.erp.entity.po.Storeoper" >
+    <id column="UUID" property="uuid" jdbcType="DECIMAL" />
+    <result column="EMPUUID" property="empuuid" jdbcType="DECIMAL" />
+    <result column="OPERTIME" property="opertime" jdbcType="TIMESTAMP" />
+    <result column="STOREUUID" property="storeuuid" jdbcType="DECIMAL" />
+    <result column="GOODSUUID" property="goodsuuid" jdbcType="DECIMAL" />
+    <result column="NUM" property="num" jdbcType="DECIMAL" />
+    <result column="TYPE" property="type" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    UUID, EMPUUID, OPERTIME, STOREUUID, GOODSUUID, NUM, TYPE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.isoft.erp.entity.po.StoreoperExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from STOREOPER
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from STOREOPER
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from STOREOPER
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.isoft.erp.entity.po.StoreoperExample" >
+    delete from STOREOPER
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.isoft.erp.entity.po.Storeoper" >
+    insert into STOREOPER (UUID, EMPUUID, OPERTIME, 
+      STOREUUID, GOODSUUID, NUM, 
+      TYPE)
+    values (#{uuid,jdbcType=DECIMAL}, #{empuuid,jdbcType=DECIMAL}, #{opertime,jdbcType=TIMESTAMP}, 
+      #{storeuuid,jdbcType=DECIMAL}, #{goodsuuid,jdbcType=DECIMAL}, #{num,jdbcType=DECIMAL}, 
+      #{type,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.isoft.erp.entity.po.Storeoper" >
+    insert into STOREOPER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        UUID,
+      </if>
+      <if test="empuuid != null" >
+        EMPUUID,
+      </if>
+      <if test="opertime != null" >
+        OPERTIME,
+      </if>
+      <if test="storeuuid != null" >
+        STOREUUID,
+      </if>
+      <if test="goodsuuid != null" >
+        GOODSUUID,
+      </if>
+      <if test="num != null" >
+        NUM,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=DECIMAL},
+      </if>
+      <if test="empuuid != null" >
+        #{empuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="opertime != null" >
+        #{opertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storeuuid != null" >
+        #{storeuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsuuid != null" >
+        #{goodsuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.isoft.erp.entity.po.StoreoperExample" resultType="java.lang.Integer" >
+    select count(*) from STOREOPER
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update STOREOPER
+    <set >
+      <if test="record.uuid != null" >
+        UUID = #{record.uuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.empuuid != null" >
+        EMPUUID = #{record.empuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.opertime != null" >
+        OPERTIME = #{record.opertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.storeuuid != null" >
+        STOREUUID = #{record.storeuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.goodsuuid != null" >
+        GOODSUUID = #{record.goodsuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.num != null" >
+        NUM = #{record.num,jdbcType=DECIMAL},
+      </if>
+      <if test="record.type != null" >
+        TYPE = #{record.type,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update STOREOPER
+    set UUID = #{record.uuid,jdbcType=DECIMAL},
+      EMPUUID = #{record.empuuid,jdbcType=DECIMAL},
+      OPERTIME = #{record.opertime,jdbcType=TIMESTAMP},
+      STOREUUID = #{record.storeuuid,jdbcType=DECIMAL},
+      GOODSUUID = #{record.goodsuuid,jdbcType=DECIMAL},
+      NUM = #{record.num,jdbcType=DECIMAL},
+      TYPE = #{record.type,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.isoft.erp.entity.po.Storeoper" >
+    update STOREOPER
+    <set >
+      <if test="empuuid != null" >
+        EMPUUID = #{empuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="opertime != null" >
+        OPERTIME = #{opertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storeuuid != null" >
+        STOREUUID = #{storeuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsuuid != null" >
+        GOODSUUID = #{goodsuuid,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        NUM = #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.isoft.erp.entity.po.Storeoper" >
+    update STOREOPER
+    set EMPUUID = #{empuuid,jdbcType=DECIMAL},
+      OPERTIME = #{opertime,jdbcType=TIMESTAMP},
+      STOREUUID = #{storeuuid,jdbcType=DECIMAL},
+      GOODSUUID = #{goodsuuid,jdbcType=DECIMAL},
+      NUM = #{num,jdbcType=DECIMAL},
+      TYPE = #{type,jdbcType=CHAR}
+    where UUID = #{uuid,jdbcType=DECIMAL}
+  </update>
+</mapper>

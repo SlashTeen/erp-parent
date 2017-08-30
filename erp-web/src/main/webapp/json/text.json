@@ -1,0 +1,17 @@
+{
+"empl.uuid": "2",
+"empl.birthday": "1949-10-01 00:00:00.0",
+"empl.username": "sunwukong",
+"empl.pwd": "sunwukong",
+"empl.name": "孙悟空",
+"empl.gender": "1",
+"empl.email": "swk@126.cn",
+"empl.tele": "12345678",
+"empl.address": "花果山水帘洞11-2",
+"empl.depuuid": "10",
+"empl.description": null,
+"dep.uuid": "10",
+"dep.deptname": "工会",
+"dep.tele": "555555",
+"dep.emp_count": "1"
+}

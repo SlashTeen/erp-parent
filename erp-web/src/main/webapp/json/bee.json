@@ -1,0 +1,20 @@
+{
+  "gps": [
+    {
+      "latitude": 39.746628,
+      "longitude": 116.571222
+    },
+    {
+      "latitude": 39.742766,
+      "longitude": 116.537935
+    },
+    {
+      "latitude": 39.736098,
+      "longitude": 116.505351
+    },
+  ],
+  "maxLatitude": 40.17976,
+  "maxLongitude": 116.716722,
+  "minLatitude": 39.688213,
+  "minLongitude": 116.088845
+}
